@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:poke_team_app/assets/widgets/simple_txt.dart';
-import 'package:poke_team_app/assets/widgets/widgets.dart';
+import 'package:poke_team_app/infraestructure/utils/widgets/simple_txt.dart';
+import 'package:poke_team_app/infraestructure/utils/widgets/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterPage extends StatefulWidget {

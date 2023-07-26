@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:poke_team_app/router/router.dart';
-import 'package:poke_team_app/utils/initialPath.dart';
+import 'package:poke_team_app/config/router/router.dart';
+import 'package:poke_team_app/infraestructure/utils/initial_path.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

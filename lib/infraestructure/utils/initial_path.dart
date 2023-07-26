@@ -7,8 +7,10 @@ Future<String> initialPath() async {
 
   String? username = sharedPreferences.getString('username');
 
-  if (username!.isNotEmpty) {
-    return 'login_page';
+  if (username != null) {
+    if (username.isNotEmpty) {
+      return 'login_page';
+    }
   }
 
   return 'register_page';

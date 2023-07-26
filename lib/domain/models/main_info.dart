@@ -14,12 +14,12 @@ class MainInfo {
   String url;
 
   factory MainInfo.fromJson(Map<String, dynamic> json) => MainInfo(
-        name: json['name'] ?? '',
-        url: json['url'] ?? '',
-      );
+    name: json['name'] ?? '',
+    url: json['url'] ?? '',
+  );
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        'url': url,
-      };
+    'name': name,
+    'url': url,
+  };
 }
