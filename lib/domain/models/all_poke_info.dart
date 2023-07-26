@@ -5,74 +5,79 @@ PokemonInfo pokemonInfoFromJson(String str) => PokemonInfo.fromJson(json.decode(
 String pokemonInfoToJson(PokemonInfo data) => json.encode(data.toJson());
 
 class PokemonInfo {
-  int id;
-  String name;
-  List<Ability> abilities;
+  
   int baseExperience;
+  int weight;
+  int id;
+  
+  String name;
+
+  List<Ability> abilities;
   List<Form> forms;
   List<Stat> stats;
   List<Type> types;
-  int weight;
+  
   Sprites sprites;
 
   PokemonInfo({
-    required this.id,
-    required this.name,
-    required this.abilities,
     required this.baseExperience,
+    required this.weight,
+    required this.id,
+
+    required this.name,
+    
+    required this.abilities,
     required this.forms,
     required this.stats,
     required this.types,
-    required this.weight,
+    
     required this.sprites,
   });
 
   factory PokemonInfo.fromJson(Map<String, dynamic> json) => PokemonInfo(
-    id: json["id"],
-    name: json["name"],
-    abilities: List<Ability>.from(json["abilities"].map((x) => Ability.fromJson(x))),
     baseExperience: json["base_experience"],
+    weight: json["weight"],
+    id: json["id"],
+
+    name: json["name"],
+    
+    abilities: List<Ability>.from(json["abilities"].map((x) => Ability.fromJson(x))),
     forms: List<Form>.from(json["forms"].map((x) => Form.fromJson(x))),
     stats: List<Stat>.from(json["stats"].map((x) => Stat.fromJson(x))),
     types: List<Type>.from(json["types"].map((x) => Type.fromJson(x))),
-    weight: json["weight"],
+    
     sprites: Sprites.fromJson(json["sprites"]),
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "abilities": List<dynamic>.from(abilities.map((x) => x.toJson())),
     "base_experience": baseExperience,
+    "weight": weight,
+    "id": id,
+
+    "name": name,
+    
+    "abilities": List<dynamic>.from(abilities.map((x) => x.toJson())),
     "forms": List<dynamic>.from(forms.map((x) => x.toJson())),
     "stats": List<dynamic>.from(stats.map((x) => x.toJson())),
     "types": List<dynamic>.from(types.map((x) => x.toJson())),
-    "weight": weight,
+    
     "sprites": sprites.toJson(),
   };
 }
 
 class Ability {
   Form ability;
-  bool isHidden;
-  int slot;
 
   Ability({
     required this.ability,
-    required this.isHidden,
-    required this.slot,
   });
 
   factory Ability.fromJson(Map<String, dynamic> json) => Ability(
     ability: Form.fromJson(json["ability"]),
-    isHidden: json["is_hidden"],
-    slot: json["slot"],
   );
 
   Map<String, dynamic> toJson() => {
     "ability": ability.toJson(),
-    "is_hidden": isHidden,
-    "slot": slot,
   };
 }
 
@@ -97,74 +102,34 @@ class Form {
 }
 
 class Sprites {
-  String backDefault;
-  dynamic backFemale;
-  String backShiny;
-  dynamic backShinyFemale;
-  String frontDefault;
-  dynamic frontFemale;
-  String frontShiny;
-  dynamic frontShinyFemale;
   Other other;
 
   Sprites({
-    required this.backDefault,
-    this.backFemale,
-    required this.backShiny,
-    this.backShinyFemale,
-    required this.frontDefault,
-    this.frontFemale,
-    required this.frontShiny,
-    this.frontShinyFemale,
     required this.other,
   });
 
   factory Sprites.fromJson(Map<String, dynamic> json) => Sprites(
-    backDefault: json["back_default"],
-    backFemale: json["back_female"],
-    backShiny: json["back_shiny"],
-    backShinyFemale: json["back_shiny_female"],
-    frontDefault: json["front_default"],
-    frontFemale: json["front_female"],
-    frontShiny: json["front_shiny"],
-    frontShinyFemale: json["front_shiny_female"],
     other: Other.fromJson(json["other"]),
   );
 
   Map<String, dynamic> toJson() => {
-    "back_default": backDefault,
-    "back_female": backFemale,
-    "back_shiny": backShiny,
-    "back_shiny_female": backShinyFemale,
-    "front_default": frontDefault,
-    "front_female": frontFemale,
-    "front_shiny": frontShiny,
-    "front_shiny_female": frontShinyFemale,
     "other": other.toJson(),
   };
 }
 
 class Other {
   DreamWorld dreamWorld;
-  Home home;
-  OfficialArtwork officialArtwork;
 
   Other({
-    required this.dreamWorld,
-    required this.home,
-    required this.officialArtwork,
+    required this.dreamWorld
   });
 
   factory Other.fromJson(Map<String, dynamic> json) => Other(
-    dreamWorld: DreamWorld.fromJson(json["dream_world"]),
-    home: Home.fromJson(json["home"]),
-    officialArtwork: OfficialArtwork.fromJson(json["official-artwork"]),
+    dreamWorld: DreamWorld.fromJson(json["dream_world"])
   );
 
   Map<String, dynamic> toJson() => {
-    "dream_world": dreamWorld.toJson(),
-    "home": home.toJson(),
-    "official-artwork": officialArtwork.toJson(),
+    "dream_world": dreamWorld.toJson()
   };
 }
 
@@ -185,54 +150,6 @@ class DreamWorld {
   Map<String, dynamic> toJson() => {
     "front_default": frontDefault,
     "front_female": frontFemale,
-  };
-}
-
-class Home {
-  String frontDefault;
-  dynamic frontFemale;
-  String frontShiny;
-  dynamic frontShinyFemale;
-
-  Home({
-    required this.frontDefault,
-    this.frontFemale,
-    required this.frontShiny,
-    this.frontShinyFemale,
-  });
-
-  factory Home.fromJson(Map<String, dynamic> json) => Home(
-    frontDefault: json["front_default"],
-    frontFemale: json["front_female"],
-    frontShiny: json["front_shiny"],
-    frontShinyFemale: json["front_shiny_female"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "front_default": frontDefault,
-    "front_female": frontFemale,
-    "front_shiny": frontShiny,
-    "front_shiny_female": frontShinyFemale,
-  };
-}
-
-class OfficialArtwork {
-  String frontDefault;
-  String frontShiny;
-
-  OfficialArtwork({
-    required this.frontDefault,
-    required this.frontShiny,
-  });
-
-  factory OfficialArtwork.fromJson(Map<String, dynamic> json) => OfficialArtwork(
-    frontDefault: json["front_default"],
-    frontShiny: json["front_shiny"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "front_default": frontDefault,
-    "front_shiny": frontShiny,
   };
 }
 

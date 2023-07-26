@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:poke_team_app/infraestructure/utils/extensions/string.dart';
-import 'package:poke_team_app/infraestructure/utils/widgets/widgets.dart';
-import 'package:poke_team_app/infraestructure/driven_adapter/pokemon_controllers.dart';
-import 'package:poke_team_app/domain/models/poke_info.dart';
+import 'package:poke_team_app/config/bloc/pokemon/pokemon_bloc.dart';
+import 'package:poke_team_app/design/common/widgets.dart';
+
+import '../domain/models/less_poke_info.dart';
+import '../infraestructure/utils/colors.dart';
 
 class HomePage extends StatefulWidget {
+
   const HomePage({super.key});
 
   @override
@@ -21,7 +27,7 @@ class _HomePageState extends State<HomePage> {
   
         child: Padding(
 
-          padding: const EdgeInsets.only(left: 25, top: 30, right: 25),
+          padding: const EdgeInsets.only(left: 25, top: 20, right: 25),
           child: Column( crossAxisAlignment: CrossAxisAlignment.start,
         
             children: [
@@ -68,79 +74,107 @@ class ShowList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final pokemonCtrl = PokemonRepositoryControllers();
-    
-    return Scaffold(
-      body: FutureBuilder(
-        future: pokemonCtrl.getInitialPokemonData(),
-        builder: (context, snapshot) {
-          
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: customText('Cargando datos', 18));
-          }
-          
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: customText('aqui no hay naj', 18));
-          }
-        
-          final data = snapshot.data;
-        
-          return GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2),
-            itemCount: data!.length,
-            physics: const AlwaysScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-        
-              return Card(
-                elevation: 5,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20))
-                ),
-                color: Colors.blue[300],
-                child: Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    
-                    infoPoke(data, index),
 
-                    loadImage(data[index].sprites.frontDefault)
+    return BlocBuilder<PokemonBloc, PokemonState>(
+      builder: (context, state) {
+        return Scaffold(
+          body: FutureBuilder(
+            future: state.getPokemonData(),
+            builder: (context, snapshot) {
               
-                  ],
-                    
-                ),
-                    
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: customText('Cargando datos', 18));
+              }
+              
+              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Center(child: customText('aqui no hay naj', 18));
+              }
+            
+              final data = snapshot.data;
+            
+              return GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, mainAxisExtent: 180),
+                itemCount: data!.length,
+                physics: const AlwaysScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+
+                  String forColor = data[index].types.first.type.name;
+                  Color? color = backgroundColor[forColor] ?? backgroundColor['default'];
+
+                  return GestureDetector(
+                    onTap: () => Navigator.of(context).pushNamed('poke_info_page', arguments: [
+                      data[index].name
+                    ]),
+                    child: Card(
+                      elevation: 5,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20))
+                      ),
+                      color: color,
+                      child: Stack(
+                  
+                        children: [
+                  
+                          const Positioned(
+                            right: -20,
+                            bottom: -20,
+                            child: Icon(
+                              Icons.catching_pokemon_outlined, 
+                              color: Colors.white24,
+                              size: 140)),
+                  
+                          infoPoke(data[index], index),
+                      
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: loadImage(data[index].sprites.other.dreamWorld.frontDefault))
+                  
+                        ],
+                  
+                      )
+                          
+                    ),
+                  );
+                
+                },
+              
               );
             
             },
           
-          );
-        
-        },
-      
-      ),
-
+          ),
+    
+        );
+      },
     );
   
   }
 
-  Padding infoPoke(List<PokemonInfo> data, int index) {
+  Padding infoPoke(LessPokemonInfo data, int index) {
     
     return Padding(
     
-      padding: const EdgeInsets.only(top: 20, left: 15),
+      padding: const EdgeInsets.only(top: 10, left: 15),
       child: Column( crossAxisAlignment: CrossAxisAlignment.start,
     
         children: [
     
           customText(
-            data[index].name.withUpper(), 20, 
+            '#${data.id.toString().addZero(3)}', 18, 
+            color: Colors.grey[800],
+            fontWeight: FontWeight.bold),
+
+          customText(
+            data.name.withUpper(), 20, 
             color: Colors.white, 
             fontWeight: FontWeight.bold),
+
+          const SizedBox(height: 10),
           
-          const SizedBox(height: 20),
-    
           Column( crossAxisAlignment: CrossAxisAlignment.start,
-            children: data[index].types.map((e) => seeStats(e.type.name.withUpper())).toList(),
+            children: data.types.map((e) => seeStats(e.type.name.withUpper())).toList(),
           )
     
         ],
@@ -151,24 +185,15 @@ class ShowList extends StatelessWidget {
   
   }
 
-  Container seeStats( String stats ) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 5),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 3),
-      decoration: BoxDecoration(
-        color: Colors.blue[200],
-        borderRadius: BorderRadius.circular(20)
-      ),
-      child: customText(stats, 16, color: Colors.white));
-  }
+  Widget seeStats( String stats ) => customText(stats, 16, color: Colors.white);
 
-  Align loadImage( String imageUrl ) {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Container(
-        padding: const EdgeInsets.only(right: 25, bottom: 15),
-        child: Image.network(imageUrl)),
-    );
+  Container loadImage( String imageUrl ) {
+    return Container(
+      padding: const EdgeInsets.only(bottom: 10, right: 10),
+      width: 90,
+      height: 90,
+      child: SvgPicture.network(imageUrl, 
+        placeholderBuilder: (BuildContext context) => const CircularProgressIndicator()));
   }
 
 }
