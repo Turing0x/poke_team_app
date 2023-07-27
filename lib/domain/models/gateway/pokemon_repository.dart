@@ -1,5 +1,9 @@
-import '../less_poke_info.dart';
+import '../all_poke_info.dart';
 
 abstract class PokemonRepository {
-  Future<List<LessPokemonInfo>> getInitialPokemonData();
+
+  Future<List<PokemonInfo>> getInitialPokemonData();
+
+  Future<PokemonInfo> getPokemonDataById( String pokeId );
+
 }

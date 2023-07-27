@@ -10,7 +10,8 @@ MaterialPageRoute<dynamic>? onGenerateRoute ( RouteSettings settings ) {
   
     'poke_info_page': MaterialPageRoute(
       builder: (_) => PokeInfoPage(
-        name: argumentos[0],
+        pokeData: argumentos[0],
+        scaffoldBackgroundColor: argumentos[1],
       ))
   
   };

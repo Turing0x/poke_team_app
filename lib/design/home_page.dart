@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:poke_team_app/infraestructure/utils/extensions/string.dart';
 import 'package:poke_team_app/config/bloc/pokemon/pokemon_bloc.dart';
 import 'package:poke_team_app/design/common/widgets.dart';
 
-import '../domain/models/less_poke_info.dart';
+import '../domain/models/all_poke_info.dart';
 import '../infraestructure/utils/colors.dart';
+import '../infraestructure/utils/load_network_svg.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -74,12 +74,11 @@ class ShowList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-
     return BlocBuilder<PokemonBloc, PokemonState>(
       builder: (context, state) {
         return Scaffold(
           body: FutureBuilder(
-            future: state.getPokemonData(),
+            future: state.getInitialPokemonData(),
             builder: (context, snapshot) {
               
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -100,18 +99,18 @@ class ShowList extends StatelessWidget {
                 itemBuilder: (context, index) {
 
                   String forColor = data[index].types.first.type.name;
-                  Color? color = backgroundColor[forColor] ?? backgroundColor['default'];
+                  Color? backColor = backgroundColor[forColor];
 
                   return GestureDetector(
                     onTap: () => Navigator.of(context).pushNamed('poke_info_page', arguments: [
-                      data[index].name
+                      data[index], backColor
                     ]),
                     child: Card(
                       elevation: 5,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20))
                       ),
-                      color: color,
+                      color: backColor,
                       child: Stack(
                   
                         children: [
@@ -129,7 +128,7 @@ class ShowList extends StatelessWidget {
                           Positioned(
                             bottom: 0,
                             right: 0,
-                            child: loadImage(data[index].sprites.other.dreamWorld.frontDefault))
+                            child: loadNetworkSvg(data[index].sprites.other.dreamWorld.frontDefault))
                   
                         ],
                   
@@ -152,7 +151,7 @@ class ShowList extends StatelessWidget {
   
   }
 
-  Padding infoPoke(LessPokemonInfo data, int index) {
+  Padding infoPoke(PokemonInfo data, int index) {
     
     return Padding(
     
@@ -186,14 +185,5 @@ class ShowList extends StatelessWidget {
   }
 
   Widget seeStats( String stats ) => customText(stats, 16, color: Colors.white);
-
-  Container loadImage( String imageUrl ) {
-    return Container(
-      padding: const EdgeInsets.only(bottom: 10, right: 10),
-      width: 90,
-      height: 90,
-      child: SvgPicture.network(imageUrl, 
-        placeholderBuilder: (BuildContext context) => const CircularProgressIndicator()));
-  }
 
 }

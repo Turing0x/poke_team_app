@@ -8,6 +8,7 @@ class PokemonInfo {
   
   int baseExperience;
   int weight;
+  int height;
   int id;
   
   String name;
@@ -16,12 +17,16 @@ class PokemonInfo {
   List<Form> forms;
   List<Stat> stats;
   List<Type> types;
+  List<Move> moves;
   
   Sprites sprites;
+
+  Species species;
 
   PokemonInfo({
     required this.baseExperience,
     required this.weight,
+    required this.height,
     required this.id,
 
     required this.name,
@@ -30,13 +35,16 @@ class PokemonInfo {
     required this.forms,
     required this.stats,
     required this.types,
+    required this.moves,
     
     required this.sprites,
+    required this.species,
   });
 
   factory PokemonInfo.fromJson(Map<String, dynamic> json) => PokemonInfo(
     baseExperience: json["base_experience"],
     weight: json["weight"],
+    height: json["height"],
     id: json["id"],
 
     name: json["name"],
@@ -45,13 +53,16 @@ class PokemonInfo {
     forms: List<Form>.from(json["forms"].map((x) => Form.fromJson(x))),
     stats: List<Stat>.from(json["stats"].map((x) => Stat.fromJson(x))),
     types: List<Type>.from(json["types"].map((x) => Type.fromJson(x))),
+    moves: List<Move>.from(json["moves"].map((x) => Move.fromJson(x))),
     
     sprites: Sprites.fromJson(json["sprites"]),
+    species: Species.fromJson(json["species"]),
   );
 
   Map<String, dynamic> toJson() => {
     "base_experience": baseExperience,
     "weight": weight,
+    "height": height,
     "id": id,
 
     "name": name,
@@ -60,8 +71,10 @@ class PokemonInfo {
     "forms": List<dynamic>.from(forms.map((x) => x.toJson())),
     "stats": List<dynamic>.from(stats.map((x) => x.toJson())),
     "types": List<dynamic>.from(types.map((x) => x.toJson())),
+    "moves": List<dynamic>.from(moves.map((x) => x.toJson())),
     
     "sprites": sprites.toJson(),
+    "species": species.toJson(),
   };
 }
 
@@ -114,6 +127,22 @@ class Sprites {
 
   Map<String, dynamic> toJson() => {
     "other": other.toJson(),
+  };
+}
+
+class Species {
+  String name;
+
+  Species({
+    required this.name,
+  });
+
+  factory Species.fromJson(Map<String, dynamic> json) => Species(
+    name: json["name"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "name": name,
   };
 }
 
@@ -194,5 +223,37 @@ class Type {
   Map<String, dynamic> toJson() => {
     "slot": slot,
     "type": type.toJson(),
+  };
+}
+
+class Move {
+  MoveClass move;
+
+  Move({
+    required this.move,
+  });
+
+  factory Move.fromJson(Map<String, dynamic> json) => Move(
+    move: MoveClass.fromJson(json["move"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "move": move.toJson(),
+  };
+}
+
+class MoveClass {
+  String name;
+
+  MoveClass({
+    required this.name,
+  });
+
+  factory MoveClass.fromJson(Map<String, dynamic> json) => MoveClass(
+    name: json["name"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "name": name,
   };
 }
