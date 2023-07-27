@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:poke_team_app/infraestructure/utils/extensions/string.dart';
+import 'package:poke_team_app/infraestructure/utils/file_manager.dart';
 import 'package:poke_team_app/infraestructure/utils/load_network_svg.dart';
 import 'package:poke_team_app/design/common/widgets.dart';
 
@@ -58,29 +59,44 @@ class _PokeInfoPageState extends State<PokeInfoPage> {
           topHeader(),
           const SizedBox(height: 10),
 
-          Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Stack(
             children: [
 
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  customText(
-                  '#${id.toString().addZero(3)}', 20, 
-                  color: Colors.grey[800],
-                  fontWeight: FontWeight.bold),
-                customText(
-                  name.withUpper(), 25, 
-                  color: Colors.white, 
-                  fontWeight: FontWeight.bold),
-                const SizedBox(height: 10),
-                Row( crossAxisAlignment: CrossAxisAlignment.start,
-                  children: types.map((e) => seeStats(e) ).toList(),
-                ),
-                ]
-              ),
+              const Positioned(
+                right: 0,
+                top: -10,
+                child: Icon(
+                  Icons.catching_pokemon_outlined, 
+                  color: Colors.white12,
+                  size: 180)),
 
-              loadNetworkSvg(sprites.other.dreamWorld.frontDefault, size: 150)
-            ],
+              Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+            
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      customText(
+                      '#${id.toString().addZero(3)}', 20, 
+                      color: Colors.grey[800],
+                      fontWeight: FontWeight.bold),
+                    customText(
+                      name.withUpper(), 25, 
+                      color: Colors.white, 
+                      fontWeight: FontWeight.bold),
+                    const SizedBox(height: 10),
+                    Row( crossAxisAlignment: CrossAxisAlignment.start,
+                      children: types.map((e) => seeStats(e) ).toList(),
+                    ),
+                    ]
+                  ),
+            
+                  loadNetworkSvg(sprites.other.dreamWorld.frontDefault, size: 150)
+            
+                ],
+              ),
+              
+            ]
           )
 
       ]),
@@ -100,10 +116,24 @@ class _PokeInfoPageState extends State<PokeInfoPage> {
         const Spacer(),
     
         IconButton(
-          onPressed: (){}, 
-          icon: const Icon(Icons.favorite_border_outlined, 
-            color: Colors.white, 
-            size: 30)),
+          onPressed: (){
+            setState(() {
+
+              if( dataInsideFIle.containsValue(widget.pokeData.name) ){
+                dataInsideFIle.removeWhere((key, value) => value == widget.pokeData.name);
+                return;
+              }
+
+              dataInsideFIle.addAll({'name': widget.pokeData.name});
+            
+            });
+
+            print(dataInsideFIle);
+
+          },
+          icon: Icon(Icons.favorite_rounded, 
+            color: ( dataInsideFIle.containsValue(widget.pokeData.name)
+              ? Colors.red : Colors.white ), size: 30)),
     
       ],
     );

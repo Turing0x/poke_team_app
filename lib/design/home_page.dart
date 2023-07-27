@@ -7,7 +7,9 @@ import 'package:poke_team_app/design/common/widgets.dart';
 
 import '../domain/models/all_poke_info.dart';
 import '../infraestructure/utils/colors.dart';
+import '../infraestructure/utils/file_manager.dart';
 import '../infraestructure/utils/load_network_svg.dart';
+import '../infraestructure/utils/permission.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -18,6 +20,22 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  @override
+  void initState() {
+    
+    permissionStorage().then((value) async {
+      
+      if (!value) {
+        await permissionStorage();
+      }
+      
+      await readAllFilesAndSaveInMaps();
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
 
